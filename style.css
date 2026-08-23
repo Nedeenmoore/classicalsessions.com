@@ -1,0 +1,760 @@
+
+:root{
+  --ink:#181510; --ink-soft:#3d382f; --muted:#79715f; --paper:#faf7f0; --card:#fffdf8;
+  --line:#e8e1d3; --line-soft:#efe9dd; --head:#605a4b;
+  /* the teal of the water in the hero photograph. --sea is the quiet one, for labels and
+     marks you cannot click; --sea-lit is brighter and more saturated, for anything you can. */
+  --sea:#40676b; --sea-lit:#0b7a86;
+  /* the tile ribbon: sampled from the foreground sand of the hero photograph */
+  --sea-tile:#7c6b5d;
+  --orange:var(--sea); --blue:var(--sea-lit);
+  --green:#38735c; --gold:#a98b3f;
+  --serif:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.65;
+  -webkit-font-smoothing:antialiased;font-size:16.5px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+/* every <img> carries width and height attributes so the page does not jump while
+   pictures load. those attributes are presentational hints, so reset both axes to auto
+   here and let each component set the one dimension it actually cares about. */
+img{width:auto;height:auto;max-width:100%}
+a{color:inherit}
+::selection{background:#f3d8cd}
+
+/* reveal animation */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.6,.2,1),transform .7s cubic-bezier(.2,.6,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+/* header */
+:root{--navh:99px}
+@media(max-width:560px){:root{--navh:71px}}
+header{border-bottom:1px solid var(--line);background:rgba(250,247,240,.88);backdrop-filter:blur(10px);
+  position:sticky;top:0;z-index:50}
+/* pages that open on a photograph: no bar, only the three lines. the header floats,
+   and earns its background back once you have scrolled past the opening image. */
+body.floatnav header{position:fixed;left:0;right:0;top:0;background:none;backdrop-filter:none;
+  border-bottom:0;transition:background .35s,border-color .35s}
+body.floatnav header .brand{opacity:0;pointer-events:none;transition:opacity .35s}
+/* the three lines sit a fixed half inch in from the edge, whatever the screen width,
+   rather than following the 1100px content column inward */
+body.floatnav .nav{max-width:none;padding:26px 48px;justify-content:space-between}
+@media(max-width:560px){body.floatnav .nav{padding:12px 24px}}
+body.floatnav .burger span{background:#1b2331;filter:drop-shadow(0 1px 5px rgba(250,247,240,.9))}
+body.floatnav.scrolled header{background:rgba(250,247,240,.88);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+body.floatnav.scrolled header .brand{opacity:1;pointer-events:auto}
+body.floatnav.scrolled .burger span{background:var(--ink);filter:none}
+/* the header is sticky, so in-page anchors need room to clear it */
+/* land the target just under the sticky bar, with a few pixels tucked behind it, so no
+   sliver of the band above (on the home page, the film) is left showing. */
+#about,#events,#musicians,#contact,#visit{scroll-margin-top:calc(var(--navh) - 12px)}
+@media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:26px 0}
+.brand{display:flex;align-items:center;gap:13px;text-decoration:none}
+.brand img{height:46px;width:auto}
+.brand span{font-family:"Bodoni Moda","Georgia",serif;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:.9rem}
+.nav-links{display:flex;gap:30px;font-size:.85rem;letter-spacing:.04em}
+.nav-links a{text-decoration:none;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--sea-lit)}
+.burger{width:44px;height:20px;background:none;border:0;cursor:pointer;display:flex;
+  flex-direction:column;justify-content:space-between;align-items:flex-end;padding:0}
+.burger span{display:block;height:2px;width:32px;background:var(--ink);transition:transform .3s,opacity .3s}
+body.menu-open .burger span:nth-child(1){transform:translateY(9px) rotate(45deg)}
+body.menu-open .burger span:nth-child(2){opacity:0}
+body.menu-open .burger span:nth-child(3){transform:translateY(-9px) rotate(-45deg)}
+.menu-overlay{position:fixed;top:0;left:0;right:0;background:var(--paper);z-index:40;
+  transform:translateY(-100%);transition:transform .4s cubic-bezier(.7,0,.3,1);
+  border-bottom:1px solid var(--line);box-shadow:0 24px 48px rgba(24,21,16,.08)}
+body.menu-open .menu-overlay{transform:translateY(0)}
+body.menu-open header{background:var(--paper);backdrop-filter:none;border-bottom:0}
+.menu-overlay nav{max-width:1100px;margin:0 auto;padding:128px 28px 46px;
+  display:flex;flex-direction:column;align-items:flex-start;gap:21px}
+.menu-overlay a{font-family:var(--sans);font-size:.95rem;font-weight:500;
+  text-transform:uppercase;letter-spacing:.22em;text-decoration:none;color:var(--ink);
+  line-height:1;transition:color .2s,letter-spacing .25s}
+.menu-overlay a:hover{color:var(--sea-lit);letter-spacing:.26em}
+
+/* megarow — six two-line menu tiles under the hero, as one solid band of sea colour,
+   run edge to edge so it reads as a ribbon rather than a boxed row */
+.megarow{background-color:var(--sea-tile);border-bottom:0;
+  /* a patch of the foreground sand from the hero photograph, shading removed and
+     rebuilt as periodic grain so it repeats without a seam */
+  background-image:url("../img/sand-nano.png");background-repeat:repeat;background-size:43px 43px}
+.megarow .wrap{max-width:none;padding:0 48px;display:grid;grid-template-columns:repeat(6,1fr)}
+.megarow a{display:block;padding:7px 22px;text-align:center;text-decoration:none;
+  border-left:1px solid rgba(255,255,255,.22);transition:background .25s}
+.megarow a:first-child{border-left:0}
+.megarow a:hover{background:rgba(255,255,255,.09)}
+.megarow span{display:block;font-family:var(--sans);font-size:.88rem;font-weight:400;
+  text-transform:uppercase;letter-spacing:.2em;line-height:1.75;color:#fff;
+  white-space:nowrap;transition:color .2s}
+.megarow .sub span{display:inline;line-height:inherit}
+.megarow .sub .sp{font-size:.3em}
+.megarow .sub .dsh{font-size:1.15em}
+.megarow span.sub{color:#fff;font-weight:400}
+.megarow .sub .dsh{font-size:1.05em}
+.megarow a:hover span{color:#fff}
+/* the caps setting is wide, so the ribbon steps down 6 -> 3 -> 2 columns and then
+   tightens the type, rather than letting the labels run off the side of the screen */
+@media(max-width:1199px){.megarow .wrap{grid-template-columns:repeat(3,1fr)}
+  .megarow a{border-left:1px solid rgba(255,255,255,.22);border-top:0;padding:12px 18px}
+  .megarow a:nth-child(3n+1){border-left:0}
+  .megarow a:nth-child(n+4){border-top:1px solid rgba(255,255,255,.22)}}
+@media(max-width:900px){.megarow .wrap{grid-template-columns:1fr 1fr;padding:0 32px}
+  .megarow a{border-left:0}
+  .megarow a:nth-child(even){border-left:1px solid rgba(255,255,255,.22)}
+  .megarow a:nth-child(n+3){border-top:1px solid rgba(255,255,255,.22)}
+  .megarow a:nth-child(-n+2){border-top:0}}
+@media(max-width:560px){.megarow .wrap{padding:0 24px}
+  .megarow a{padding:9px 12px}
+  .megarow span{font-size:.76rem;letter-spacing:.12em}}
+/* the very narrowest handsets: let a long label take two lines rather than push the page sideways */
+@media(max-width:380px){.megarow span{white-space:normal;font-size:.72rem;letter-spacing:.08em}}
+
+@media(max-width:560px){
+  .nav{flex-wrap:wrap;justify-content:center;gap:6px 0;padding:12px 0}
+  .brand span{font-size:.8rem;white-space:nowrap}
+  .nav-links{gap:18px;font-size:.8rem;flex-wrap:wrap;justify-content:center}
+}
+
+/* hero — full-bleed Dingle Peninsula photograph */
+.hero{position:relative;min-height:min(62vh,640px);display:flex;align-items:center;justify-content:center;
+  text-align:center;overflow:hidden;background-color:var(--paper)}
+.hero::before{content:"";position:absolute;inset:0;z-index:0;
+  background-image:url("../img/dingle-wide.jpg");background-size:cover;background-position:center 55%;
+  opacity:.92}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;
+  background:
+    radial-gradient(66% 62% at 50% 46%, rgba(250,247,240,.42) 0%, rgba(250,247,240,.18) 55%, rgba(250,247,240,0) 80%)}
+/* phone: the same photograph, drifting slowly sideways and back so the loop has no jump.
+   moved with a transform rather than a background position, so the GPU carries it. */
+.herophoto{display:none}
+@media(max-width:700px){
+  .hero::before{display:none}
+  .hero::after{background:
+    radial-gradient(96% 52% at 50% 26%, rgba(250,247,240,.40) 0%, rgba(250,247,240,.16) 58%, rgba(250,247,240,0) 84%)}
+  .hero img.herophoto{display:block;position:absolute;left:0;top:0;height:100%;width:auto;max-width:none;
+    z-index:0;opacity:.92;transform:translateX(0);
+    animation:heropan 30s ease-in-out infinite alternate;will-change:transform}
+}
+@keyframes heropan{from{transform:translateX(0)}to{transform:translateX(-66%)}}
+@media(prefers-reduced-motion:reduce){.hero img.herophoto{animation:none;transform:translateX(-33%)}}
+.hero > *{position:relative;z-index:2}
+.hero .hero-inner{padding:60px 28px;transform:translateY(-36px)} /* laptop: text sits lower */
+@media(max-width:700px){.hero{flex-direction:column;align-items:stretch;justify-content:flex-start}
+  .hero .hero-inner{transform:none;padding:20px 24px 0}} /* phone: text rides higher */
+/* home: the hero grows by exactly the height of the vanished bar, so the foot of the
+   photograph lands where it always did and the crop simply narrows. */
+body.home .hero{min-height:calc(min(62vh,640px) + var(--navh))}
+/* the photograph and the tile ribbon together occupy exactly one screen, so the ribbon
+   lands on the bottom edge whatever the machine's aspect ratio. the photo is set with
+   cover on a laptop and full-height on a phone, so a taller box simply crops more off
+   the sides. svh is the height with the phone's address bar showing, which is the small
+   case: use it so the ribbon is never pushed below the fold, only ever revealed above it. */
+body.home .screen1{height:100vh;height:100svh;display:flex;flex-direction:column}
+body.home .screen1 .hero{flex:1 1 auto;min-height:0}
+body.home .screen1 .megarow{flex:0 0 auto}
+@media(max-width:700px){body.home .hero .hero-inner{padding-top:calc(var(--navh) + 73px)}}
+.hero img.logo{position:absolute;right:7%;bottom:calc(9% + 48px);height:128px;margin:0;
+  filter:drop-shadow(0 10px 30px rgba(0,0,0,.45))}
+.hero .eyebrow{font-size:clamp(.72rem,1.1vw,.9rem);letter-spacing:.3em;text-transform:uppercase;color:#38414f;
+  margin:20px 0 0;line-height:1.8;text-shadow:0 1px 14px rgba(250,247,240,.7)}
+@media(max-width:600px){.hero .eyebrow{letter-spacing:.22em;margin-top:16px}}
+.hero h1{font-family:"Bodoni Moda","Georgia",serif;font-size:clamp(2.2rem,4.8vw,3.8rem);font-weight:500;
+  letter-spacing:.07em;line-height:1.08;color:#1b2331;text-shadow:0 1px 20px rgba(250,247,240,.62)}
+.hero .year{color:#8c4a2f;font-style:italic;font-weight:500;letter-spacing:.02em}
+/* phone: the logo takes the top left corner, mirroring the three lines opposite it.
+   same 24px gutter, same 25px from the top, so the two corners answer each other. */
+@media(max-width:700px){.hero img.logo{position:absolute;left:24px;right:auto;top:25px;bottom:auto;
+  height:80px;width:auto;display:block;margin:0;filter:drop-shadow(0 6px 18px rgba(24,21,16,.28))}}
+/* phone: the strapline breaks after "music" so the place name stays whole */
+.phbr{display:none}
+@media(max-width:700px){.phbr{display:block}}
+.hero .scrollcue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
+  color:#1b2331;text-decoration:none;font-size:1.5rem;opacity:.62;animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+@media (prefers-reduced-motion: reduce){.hero .scrollcue{animation:none}}
+@media(min-width:701px){
+  /* a true corner: the same distance in from the left as down from the top */
+  .hero img.logo{left:5vw;right:auto;top:5vw;bottom:auto;
+    filter:drop-shadow(0 6px 18px rgba(24,21,16,.28))}
+}
+
+/* intro band under the hero */
+/* half an inch of paper between the tile ribbon and the film */
+.intro{position:relative;overflow:hidden;padding:0;text-align:center;margin-top:48px;
+  min-height:min(56vh,470px);display:flex;align-items:flex-end;
+  border-bottom:1px solid var(--line);
+  background:
+    radial-gradient(55% 48% at 14% 8%, rgba(91,163,217,.12), transparent 70%),
+    radial-gradient(45% 40% at 88% 12%, rgba(212,80,42,.09), transparent 70%),
+    var(--paper)}
+/* the film carried a heavy wash while a line of type sat on it. the type has moved to the
+   sessions below, so the wash is now only a soft edge into the paper above and beneath. */
+.intro-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 26%;
+  opacity:.9;pointer-events:none;z-index:0}
+.intro-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(to bottom, rgba(250,247,240,.62), rgba(250,247,240,0) 20%, rgba(250,247,240,0) 80%, rgba(250,247,240,.62))}
+.intro .wrap{position:relative;z-index:2;width:100%;padding-top:46px;padding-bottom:40px}
+/* the line of type now sits along the foot of the band, so the sound mark moves up top */
+.sndbtn{position:absolute;right:20px;top:16px;z-index:3;display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--sans);font-size:.61rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--head);background:rgba(250,247,240,.72);border:1px solid var(--line);border-radius:0;
+  padding:8px 13px;cursor:pointer;line-height:1;
+  transition:background .3s,color .3s,border-color .3s,letter-spacing .3s}
+.sndbtn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);letter-spacing:.26em}
+.sndbtn[hidden]{display:none}
+.sndbtn svg{width:13px;height:13px;flex:0 0 13px;display:block}
+@media(max-width:760px){.sndbtn{right:12px;top:12px;font-size:.58rem;padding:7px 11px}}
+@keyframes bandpan{from{object-position:0% 50%}to{object-position:100% 50%}}
+@media(max-width:699px){
+  /* the clip is far wider than the band, so drift across it: the full sweep takes
+     half the clip, then it eases back, arriving home exactly as the video loops */
+  .intro-vid{object-position:0% 50%;animation:bandpan 30.1s ease-in-out infinite alternate;
+    will-change:object-position}
+  .intro-scrim{background:
+    linear-gradient(to bottom, rgba(250,247,240,.58), rgba(250,247,240,0) 22%, rgba(250,247,240,0) 78%, rgba(250,247,240,.58))}}
+@media(prefers-reduced-motion:reduce){.intro-vid{display:none;animation:none}}
+@media(max-width:700px){.intro{min-height:min(52vh,380px);margin-top:34px}
+  .intro .wrap{padding-top:34px;padding-bottom:28px}}
+/* the sessions read as one element: a line of type above, the three cards, a line below,
+   the whole thing closed top and bottom by a hairline. */
+.evhead{margin:0 0 38px;padding-bottom:26px;border-bottom:1px solid var(--line);text-align:center;
+  font-family:var(--sans);font-weight:600;text-transform:uppercase;letter-spacing:.17em;
+  line-height:1.9;color:var(--head);font-size:clamp(.72rem,.9vw,.86rem);text-wrap:balance}
+@media(max-width:700px){.evhead{margin-bottom:28px;padding-bottom:22px;font-size:.74rem;
+  letter-spacing:.12em}}
+.intro .dates{margin-top:30px;display:inline-block;font-size:.78rem;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--green);font-weight:600}
+
+/* sections */
+section{padding:76px 0}
+/* phone: the sections were carrying laptop-sized air, which stacked two paddings into a
+   150px hole between every band. half that reads as a break without reading as a gap. */
+@media(max-width:700px){section{padding:44px 0}}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:38px;gap:16px;flex-wrap:wrap}
+.sec-head h2{font-family:var(--sans);font-size:.95rem;font-weight:600;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--head)}
+.sec-head .k{font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+
+/* event cards */
+.events{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px}
+.event-card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:6px;
+  padding:34px 30px 30px;text-decoration:none;overflow:hidden;
+  transition:transform .3s cubic-bezier(.2,.6,.2,1),box-shadow .3s,border-color .3s}
+.event-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(24,21,16,.07);border-color:#d4cbb8}
+.event-card .bignum{position:absolute;top:-6px;right:14px;font-family:var(--serif);font-style:italic;
+  font-size:5.4rem;font-weight:500;color:var(--orange);opacity:.10;line-height:1;pointer-events:none}
+.event-card .num{font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--orange);font-weight:600}
+.event-card h3{font-family:var(--serif);margin:12px 0 4px;font-size:1.65rem;font-weight:600;letter-spacing:-.01em}
+.event-card .meta{color:var(--muted);font-size:.92rem;min-height:2.9em}
+#visit .event-card h3,#venues .event-card h3{min-height:3.3em}
+#visit .event-card .meta,#venues .event-card .meta{min-height:0}
+.event-card .composers{margin-top:16px;font-size:.93rem;line-height:1.55;color:var(--ink-soft);flex:1}
+.event-card .go{margin-top:auto;padding-top:20px;font-size:.86rem;font-weight:600;color:var(--blue)}
+.event-card .go span{display:inline-block;transition:transform .25s}
+.event-card:hover .go span{transform:translateX(5px)}
+.badge{display:inline-block;align-self:flex-start;margin-top:18px;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--green);border:1px solid currentColor;border-radius:999px;padding:4px 12px}
+
+/* musicians */
+.musicians{display:grid;grid-template-columns:repeat(auto-fill,minmax(156px,1fr));gap:32px 22px}
+.musician{display:block;text-align:center;text-decoration:none}
+.musician .ph{position:relative;display:block;width:128px;height:128px;margin:0 auto 14px;border-radius:50%}
+.musician img{width:128px;height:128px;border-radius:50%;object-fit:cover;display:block;margin:0 auto;
+  border:1px solid var(--line);transition:transform .3s cubic-bezier(.2,.6,.2,1),box-shadow .3s}
+.musician .ph::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid var(--orange);
+  opacity:0;transform:scale(.92);transition:opacity .3s,transform .3s}
+.musician:hover img{transform:scale(1.045);box-shadow:0 14px 30px rgba(24,21,16,.16)}
+.musician:hover .ph::after{opacity:.85;transform:scale(1)}
+.musician .nm{font-family:var(--serif);font-weight:600;font-size:.95rem;letter-spacing:-.01em;color:var(--head);line-height:1.35}
+.musician .in{color:var(--muted);font-size:.82rem;margin-top:2px}
+.musician .ext{color:var(--blue);font-size:.75rem;margin-top:4px}
+.note{font-size:.85rem;color:var(--muted);margin-top:24px}
+.note a{color:var(--sea-lit);text-decoration:none;border-bottom:1px solid rgba(11,122,134,.38)}
+.note a:hover{border-bottom-color:var(--sea-lit)}
+
+/* event page hero */
+.ehero{position:relative;padding:30px 0 44px;border-bottom:1px solid var(--line);
+  background:
+    radial-gradient(50% 60% at 90% 0%, rgba(91,163,217,.10), transparent 70%),
+    radial-gradient(40% 50% at 5% 100%, rgba(56,115,92,.08), transparent 70%),
+    var(--paper)}
+.ehero .num{font-size:.74rem;letter-spacing:.26em;text-transform:uppercase;color:var(--orange);font-weight:600}
+/* the session number and date sit above as small caps; the evening's title is the heading */
+.ehero h1{font-family:var(--sans);font-size:clamp(1.12rem,1.7vw,1.3rem);font-weight:600;
+  letter-spacing:-.014em;color:var(--head);margin:9px 0 5px;line-height:1.34}
+.ehero .meta{color:var(--muted);font-size:1.08rem;line-height:1.4}
+.fact .cal{color:var(--sea-lit);font-weight:600;text-decoration:none;
+  border-bottom:1px solid rgba(11,122,134,.38);padding-bottom:1px;transition:border-color .3s}
+.fact .cal:hover{border-bottom-color:var(--sea-lit);text-decoration:none}
+.fact .cal + .cal{margin-left:20px}
+.ehero .blurb{max-width:46em;margin-top:20px;color:var(--ink-soft)}
+/* an opening block on a floating-nav page keeps its text where it was: the vanished bar
+   becomes clear space for the three lines rather than a shift upward */
+body.floatnav .ehero-open{padding-top:calc(30px + var(--navh))}
+.ehero-open{border-bottom:0}
+/* the peninsula, held to the width of the text column so the whole photograph is visible */
+.visitband{margin:0 0 10px}
+.visitband .vbframe{position:relative;overflow:hidden}
+.visitband .vbmove{position:relative;width:100%;aspect-ratio:2000/1066}
+.visitband img{display:block;position:absolute;inset:0;width:100%;height:100%}
+/* the place names ride on the photograph as live type, so they stay sharp at any size */
+.vbmap{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+/* set in map units, exactly as the master artwork: every position was tuned at this size */
+.vbmap text{font-family:var(--sans);font-size:18px;font-weight:600;letter-spacing:3px;
+  fill:#fff;paint-order:stroke;stroke:rgba(8,18,28,.6);stroke-width:3.4px;stroke-linejoin:round}
+.vbmap line{stroke:rgba(255,255,255,.85);stroke-width:1.1;fill:none}
+.vbmap circle{fill:#fff;stroke:rgba(8,18,28,.55);stroke-width:.8}
+.vbmap line.vcase{stroke:rgba(255,255,255,.92);stroke-width:3.6}
+.vbmap circle.vcase{fill:rgba(255,255,255,.92);stroke:none}
+.vbmap line.venue{stroke:#335256;stroke-width:1.7}
+.vbmap circle.venue{fill:#335256;stroke:none}
+.vbmap text.venue{stroke:none;fill:#fff;font-size:20.5px;letter-spacing:3.3px}
+.vbmap rect.vbox{fill:#335256}
+.vbmap text.big{font-size:20.5px;letter-spacing:3.3px}
+.vbmap text.peak{fill:#000;stroke:rgba(250,247,240,.9);stroke-width:3.6px;
+  font-size:20.5px;letter-spacing:3.3px}
+/* phone: too narrow to show it whole, so it drifts across and back, as the hero does.
+   the labels come off there: 2000 units of map into 334 css pixels renders the type at
+   about three pixels, which is worse than no labels at all. a reduced set is a separate job. */
+@media(max-width:700px){
+  .vbmap{display:none}
+  .visitband .vbframe{aspect-ratio:1/1}
+  .visitband .vbmove{position:absolute;left:0;top:0;height:100%;width:auto;
+    transform:translateX(0);animation:visitpan 30s ease-in-out infinite alternate;will-change:transform}
+}
+@keyframes visitpan{from{transform:translateX(0)}to{transform:translateX(-42%)}}
+@media(prefers-reduced-motion:reduce){.visitband .vbmove{animation:none;transform:translateX(-21%)}}
+.facts{display:flex;flex-wrap:wrap;gap:13px;margin-top:28px}
+.fact{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px 18px;font-size:.9rem}
+.fact b{display:block;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+.fact a{color:var(--blue);text-decoration:none}
+.fact a:hover{text-decoration:underline}
+
+/* programme list */
+.prog{border-top:1px solid var(--line)}
+.prog-item{display:flex;align-items:baseline;gap:20px;padding:24px 10px;border-bottom:1px solid var(--line);
+  text-decoration:none;transition:background .2s,padding-left .25s}
+.prog-item:hover{background:#f4efe4;padding-left:18px}
+.prog-item .cmp{flex:0 0 215px;font-family:var(--serif);font-weight:600;font-size:.95rem;letter-spacing:-.01em;color:var(--head)}
+.prog-item .ttl{flex:1;font-size:.98rem;color:var(--ink-soft)}
+/* the individual links stay unbroken, but the line of them may wrap: on a narrow phone a
+   listing with two long links was pushing the page sideways. */
+.prog-item .arrow{color:var(--blue);font-size:.85rem;white-space:normal}
+.prog-item .arrow a{white-space:nowrap}
+@media(max-width:640px){.prog-item{flex-direction:column;gap:4px}.prog-item .cmp{flex:none}}
+
+/* piece page */
+.piece{max-width:700px;margin:0 auto;padding:76px 28px}
+.piece .k{font-size:.74rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
+.piece h1{font-family:var(--serif);font-size:clamp(1.28rem,2.93vw,1.76rem);font-weight:600;letter-spacing:-.022em;color:var(--head);margin:14px 0 6px;line-height:1.28}
+.piece .cmp{font-size:1.05rem;font-weight:600;color:var(--head)}
+.piece .cmp a{color:inherit;text-decoration:none;border-bottom:2px solid var(--sea-lit);transition:color .2s}
+.piece .cmp a:hover{color:var(--sea-lit)}
+.piece .dates{color:var(--muted);font-weight:400}
+.piece .scoring{margin:18px 0 30px;font-size:.83rem;color:var(--green);
+  border:1px solid currentColor;display:inline-block;border-radius:999px;padding:5px 15px}
+.piece p.sum{font-size:1.1rem;line-height:1.85;color:var(--ink-soft)}
+.piece p.sum::first-letter{font-family:"Bodoni Moda","Georgia",serif;font-size:3.1em;float:left;
+  line-height:.9;padding:6px 12px 0 0;color:var(--orange);font-weight:500}
+.piece .back{display:inline-block;margin-top:40px;font-size:.9rem;color:var(--blue);text-decoration:none}
+.piece .back:hover{text-decoration:underline}
+.pnav{display:flex;justify-content:space-between;gap:20px;margin-top:34px;padding-top:22px;
+  border-top:1px solid var(--line);font-size:.88rem}
+.pnav a{color:var(--muted);text-decoration:none;max-width:46%;transition:color .2s}
+.pnav a:hover{color:var(--sea-lit)}
+.crumb{padding-top:6px;font-size:.85rem}
+.crumb a{color:var(--muted);text-decoration:none}
+.crumb a:hover{color:var(--ink)}
+
+/* contact */
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:44px;align-items:start}
+@media(max-width:760px){.contact-grid{grid-template-columns:1fr}}
+.contact-grid h3{font-family:var(--sans);font-size:1.22rem;font-weight:600;letter-spacing:-.01em;
+  color:var(--head);line-height:1.38;margin-bottom:14px}
+.contact-grid p{color:var(--ink-soft);font-size:.97rem}
+form.contact{background:none;border:0;border-radius:0;padding:0}
+form.contact label{display:block;font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;margin:30px 0 0}
+form.contact label:first-child{margin-top:0}
+form.contact input,form.contact textarea{width:100%;font-family:var(--sans);font-size:1rem;color:var(--ink);
+  background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;
+  padding:9px 0 8px;outline:none;transition:border-color .3s}
+form.contact input::placeholder,form.contact textarea::placeholder{color:#b6ad9c}
+form.contact input:focus,form.contact textarea:focus{border-bottom-color:var(--sea-lit)}
+form.contact textarea{min-height:76px;resize:vertical;line-height:1.7}
+form.contact .row-check{display:flex;align-items:flex-start;gap:12px;margin-top:30px;
+  font-size:.88rem;color:var(--ink-soft)}
+form.contact .row-check input{width:15px;height:15px;flex:0 0 15px;margin-top:3px;
+  accent-color:var(--orange);border-bottom:0}
+form.contact button{margin-top:34px;font-family:var(--sans);font-weight:600;font-size:.72rem;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--ink);background:transparent;
+  border:1px solid var(--ink);border-radius:0;padding:15px 40px;cursor:pointer;
+  transition:background .3s,color .3s,letter-spacing .3s}
+form.contact button:hover{background:var(--ink);color:var(--paper);letter-spacing:.28em}
+
+/* the sign-up: one sentence, one field, one button */
+.signup{max-width:760px;margin:0 auto;text-align:center}
+.signup p{margin:0 auto;max-width:40em;font-size:1rem;line-height:1.78;color:var(--ink-soft)}
+.signup form{margin-top:30px;display:flex;align-items:center;justify-content:center;gap:16px;
+  flex-wrap:wrap}
+.signup label{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);
+  font-weight:600}
+.signup input[type=email]{flex:1 1 330px;min-width:0;font-family:var(--sans);font-size:1rem;
+  color:var(--ink);background:transparent;border:0;border-bottom:1px solid var(--line);
+  border-radius:0;padding:10px 0 9px;outline:none;transition:border-color .3s}
+.signup input[type=email]:focus{border-bottom-color:var(--sea-lit)}
+.signup button{font-family:var(--sans);font-weight:600;font-size:.64rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink);background:transparent;border:1px solid var(--ink);
+  border-radius:0;padding:10px 24px;cursor:pointer;
+  transition:background .3s,color .3s,letter-spacing .3s}
+.signup button:hover{background:var(--ink);color:var(--paper);letter-spacing:.28em}
+@media(max-width:560px){
+  .signup form{flex-direction:column;align-items:stretch;gap:6px;margin-top:26px}
+  .signup label{text-align:left}
+  .signup input[type=email]{flex:none;width:100%}
+  .signup button{width:100%;margin-top:16px}}
+
+
+/* the seven visitor guides behind Plan Your Visit */
+.ghead{font-family:var(--sans);font-size:.95rem;font-weight:600;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--head);margin:52px 0 18px;padding-top:22px;
+  border-top:1px solid var(--line);line-height:1.6}
+.gsub{font-family:var(--sans);font-size:1.05rem;font-weight:600;letter-spacing:-.01em;
+  color:var(--head);margin:30px 0 6px;line-height:1.4}
+.cpage .ghead + p.essay,.cpage .gsub + p.essay{margin-top:0}
+.gback{margin-top:54px;padding-top:22px;border-top:1px solid var(--line);font-size:.82rem;
+  letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.gback a{color:var(--blue);text-decoration:none}
+.gback a:hover{color:var(--sea-lit)}
+/* related reading at the foot of a guide page, so the pages link to each other
+   rather than only back to the index */
+.grel{margin-top:54px;padding-top:26px;border-top:1px solid var(--line)}
+.grel h2{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  font-weight:600;margin:0 0 16px}
+.grel ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.grel li{margin:0}
+.grel a{color:var(--blue);text-decoration:none;font-weight:600;font-size:1rem}
+.grel a:hover{color:var(--sea-lit)}
+.grel span{display:block;color:var(--ink-soft);font-weight:400;font-size:.93rem;
+  line-height:1.6;margin-top:3px}
+@media(min-width:720px){.grel ul{grid-template-columns:1fr 1fr;gap:18px 34px}}
+/* a session-specific travel arrangement, sitting under the facts on an event page */
+.travel{margin:22px 0 0;padding-top:18px;border-top:1px solid var(--line);font-size:.93rem;
+  line-height:1.7;color:var(--ink-soft);max-width:44em}
+.travel a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(11,122,134,.38)}
+.travel a:hover{color:var(--sea-lit);border-color:var(--sea-lit)}
+.venue .vmore{display:block;margin-top:13px}
+/* the guide index on Plan Your Visit */
+/* a fixed column count at each width, so the dividers can be turned off on the first
+   card of every row rather than only the first card of the grid. */
+.guides{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.guides a{display:block;padding:18px 26px 22px;border-left:1px solid var(--line);text-decoration:none;
+  color:inherit;transition:background .3s}
+.guides a:nth-child(4n+1){border-left:0;padding-left:0}
+.guides a:nth-child(n+5){border-top:1px solid var(--line);margin-top:-1px;padding-top:30px}
+.guides a:hover{background:linear-gradient(180deg,rgba(64,103,107,.05),transparent 70%)}
+@media(max-width:1100px){
+  .guides{grid-template-columns:repeat(3,1fr)}
+  .guides a{border-left:1px solid var(--line);padding-left:26px}
+  .guides a:nth-child(4n+1){border-left:1px solid var(--line);padding-left:26px}
+  .guides a:nth-child(3n+1){border-left:0;padding-left:0}
+  .guides a:nth-child(n+4){border-top:1px solid var(--line);margin-top:-1px;padding-top:30px}
+  .guides a:nth-child(-n+3){border-top:0;margin-top:0;padding-top:18px}}
+@media(max-width:860px){
+  .guides{grid-template-columns:repeat(2,1fr)}
+  .guides a:nth-child(3n+1),.guides a:nth-child(4n+1){border-left:1px solid var(--line);padding-left:26px}
+  .guides a:nth-child(odd){border-left:0;padding-left:0}
+  .guides a:nth-child(n+3){border-top:1px solid var(--line);margin-top:-1px;padding-top:30px}
+  .guides a:nth-child(-n+2){border-top:0;margin-top:0;padding-top:18px}}
+.guides .gt{display:block;font-family:var(--sans);font-size:1.06rem;font-weight:600;
+  letter-spacing:-.01em;color:var(--head);line-height:1.38}
+.guides .gd{display:block;margin-top:9px;font-size:.9rem;line-height:1.65;color:var(--ink-soft)}
+.guides .gg{display:block;margin-top:13px;font-size:.78rem;letter-spacing:.14em;
+  text-transform:uppercase;font-weight:600;color:var(--blue)}
+@media(max-width:760px){
+  .guides{grid-template-columns:1fr}
+  .guides a,.guides a:nth-child(odd),.guides a:nth-child(3n+1),.guides a:nth-child(4n+1){
+    border-left:0;padding:22px 0 18px;margin-top:0;border-top:1px solid var(--line)}
+  .guides a:first-child{border-top:0;padding-top:6px}}
+@media(max-width:700px){.ghead{margin-top:38px;font-size:.86rem;letter-spacing:.16em}}
+
+
+/* castlegregory.org: a wordmark rather than the festival's violin logo */
+.cgmark{font-family:"Bodoni Moda","Georgia",serif;letter-spacing:.06em}
+.brandtext{font-family:"Bodoni Moda","Georgia",serif;font-size:1rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+body.floatnav .brand .brandtext{color:#1b2331}
+.cgintro{max-width:44em;margin:0 auto}
+.cgintro p{font-size:1.02rem;line-height:1.85;color:var(--ink-soft);margin:0 0 20px}
+.cgintro a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(11,122,134,.38)}
+.cgintro a:hover{color:var(--sea-lit);border-color:var(--sea-lit)}
+/* the announcement of next year's dates, on the festival front page */
+.nextyear{margin:26px auto 0;max-width:38em;text-align:center;font-size:1.02rem;line-height:1.8;
+  color:var(--ink-soft)}
+.nextyear a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(11,122,134,.38)}
+.nextyear a:hover{color:var(--sea-lit);border-color:var(--sea-lit)}
+
+/* footer */
+footer{background:var(--ink);color:#cfc8ba;margin-top:60px;padding:64px 0 48px;font-size:.9rem}
+.foot{display:grid;grid-template-columns:auto 1fr auto;gap:40px;align-items:center;justify-items:start}
+@media(max-width:720px){.foot{grid-template-columns:1fr;text-align:center;justify-items:center}}
+.foot img{height:74px;width:auto;filter:drop-shadow(0 4px 14px rgba(0,0,0,.4))}
+.foot .fmid{line-height:1.9}
+.foot .fmid b{color:#faf7f0;font-family:"Bodoni Moda","Georgia",serif;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:.95rem;display:block;margin-bottom:4px}
+.foot a{color:#e8e1d3;text-decoration:none;border-bottom:1px solid rgba(232,225,211,.3)}
+/* the artistic directors sit in the footer, in the small print under the name */
+.fdir{display:inline-block;font-size:inherit;line-height:1.9;color:#cfc8ba}
+.fdir a{border-bottom:0;color:#cfc8ba;white-space:nowrap}
+.fdir a:hover{color:var(--sea-lit);border-color:transparent}
+.fnav{display:inline-block;margin-top:6px;font-size:.82rem;line-height:2}
+.fnav a{border-bottom:0;margin:0 2px}
+.fnav a:hover{color:var(--sea-lit)}
+.foot a:hover{color:#fff;border-color:#fff}
+.foot .fr{text-align:right;color:#938b78}
+@media(max-width:720px){.foot .fr{text-align:center}}
+
+/* piece extras */
+.durchip{margin-left:8px;color:var(--muted)}
+.dur{color:var(--muted);font-size:.85rem;white-space:nowrap}
+.dur.new{color:var(--orange);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.part-h{font-family:var(--serif);font-size:1.05rem;font-weight:600;letter-spacing:-.012em;color:var(--head);margin:34px 0 10px}
+p.sum.nodrop::first-letter{font-size:inherit;float:none;padding:0;color:inherit;font-weight:inherit;font-family:inherit}
+.listen{display:inline-block;margin-top:22px;font-family:var(--sans);border:0;cursor:pointer;font-weight:600;font-size:.95rem;color:#fff;background:var(--orange);
+  border-radius:999px;padding:12px 26px;text-decoration:none;transition:background .25s,transform .2s}
+.listen:hover{background:var(--ink);transform:translateY(-1px)}
+.listen-credit{display:inline-block;margin-left:14px;font-size:.85rem;color:var(--muted)}
+.deeper{display:inline-flex;align-items:baseline;gap:14px;font-family:var(--sans);font-size:.7rem;
+  font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--head);text-decoration:none;
+  padding-bottom:10px;border-bottom:1px solid var(--line);
+  transition:color .35s,border-color .35s,letter-spacing .35s}
+.deeper span{display:inline-block;font-size:1.3em;line-height:1;transform:translateY(.06em);
+  transition:transform .35s cubic-bezier(.2,.6,.2,1)}
+.deeper:hover{color:var(--sea-lit);border-bottom-color:var(--sea-lit);letter-spacing:.3em}
+.deeper:hover span{transform:translate(7px,.06em)}
+@media(max-width:600px){.deeper{font-size:.63rem;letter-spacing:.22em}}
+/* click-to-play embeds */
+.yt{position:relative;margin:22px 0 6px;max-width:620px;aspect-ratio:16/9;
+  background:linear-gradient(130deg,#1b2b3d,#2f5f4d);
+  border-radius:8px;overflow:hidden;cursor:pointer;box-shadow:0 14px 34px rgba(24,21,16,.16)}
+.yt img{width:100%;height:100%;object-fit:cover;opacity:.88;transition:opacity .25s,transform .4s}
+.yt:hover img{opacity:1;transform:scale(1.02)}
+.yt .playbtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:46px;
+  background:var(--orange);border-radius:10px;transition:background .25s}
+.yt .playbtn::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-40%,-50%);
+  border-style:solid;border-width:9px 0 9px 15px;border-color:transparent transparent transparent #fff}
+.yt:hover .playbtn{background:var(--ink)}
+.yt.nothumb{display:flex;align-items:center;justify-content:center;aspect-ratio:auto;min-height:88px;
+  background:linear-gradient(120deg,#20334a,#38735c)}
+.yt .yt-label{color:#faf7f0;font-weight:600;letter-spacing:.04em}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:3}
+/* the mark is decoration: the tap belongs to the frame around it, and both the mark
+   and the thumbnail stand down as soon as the player is in place. */
+.yt .playbtn,.yt img{pointer-events:none}
+.yt.on .playbtn,.yt.on img{display:none}
+.yt.nothumb.on{aspect-ratio:16/9}
+.embed-cap{font-size:.85rem;color:var(--muted);margin:8px 0 4px}
+.pullquote{margin:16px 0 24px;padding:0 2em 0 2.6em;border:0;text-align:left}
+.pullquote blockquote{font-family:var(--serif);font-size:.95rem;font-weight:400;line-height:1.62;
+  color:var(--ink-soft);letter-spacing:0;margin:0}
+.pullquote figcaption{margin-top:12px;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;line-height:2}
+.pullquote figcaption a.src{color:inherit;text-decoration:none;border-bottom:1px solid rgba(121,113,95,.35);
+  padding-bottom:2px;transition:color .3s,border-color .3s}
+.pullquote figcaption a.src:hover{color:var(--sea-lit);border-bottom-color:var(--sea-lit)}
+@media(max-width:600px){.pullquote{margin:14px 0 20px;padding:0 0 0 1.3em}
+  .pullquote blockquote{font-size:.92rem}
+  .pullquote figcaption{font-size:.55rem;letter-spacing:.18em}}
+
+/* sessions: editorial columns */
+.evrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:0}
+.ev{position:relative;display:flex;flex-direction:column;padding:8px 34px 6px;
+  border-left:1px solid var(--line);text-decoration:none;color:inherit;
+  transition:background .35s ease}
+.ev:first-child{border-left:0;padding-left:0}
+.ev:hover{background:linear-gradient(180deg,rgba(212,80,42,.045),transparent 65%)}
+.ev-cal{position:absolute;top:0;right:58px;width:66px;height:74px;color:var(--orange);
+  opacity:.32;pointer-events:none;transition:opacity .35s,transform .5s cubic-bezier(.2,.6,.2,1)}
+.ev:hover .ev-cal{opacity:.5;transform:translateY(-3px)}
+.ev-label{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--orange);font-weight:600}
+.ev h3{font-family:var(--sans);font-size:1.22rem;font-weight:600;line-height:1.38;
+  letter-spacing:-.01em;color:var(--head);margin:12px 0 0;padding-right:74px}
+/* the time sits directly beneath the calendar chit, in the chit's own colour */
+.ev-time{position:absolute;top:80px;right:58px;width:66px;text-align:center;
+  font-size:.8rem;font-weight:600;letter-spacing:.02em;color:var(--orange)}
+.ev-prog{margin-top:34px;font-size:.93rem;line-height:1.6;color:var(--ink-soft);flex:1;
+  padding-right:74px}
+.ev-free{margin-top:16px;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+.ev-go{margin-top:16px;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:600;color:var(--blue);transition:color .2s}
+.ev-go span{display:inline-block;transition:transform .28s}
+.ev:hover .ev-go{color:var(--sea-lit)}
+.ev:hover .ev-go span{transform:translateX(6px)}
+@media(min-width:761px) and (max-width:1010px){.ev-cal,.ev-time{right:10px}}
+@media(max-width:760px){
+  .ev{border-left:0;border-top:1px solid var(--line);padding:26px 0 8px}
+  .ev:first-child{border-top:0;padding-top:8px}
+  /* phone: the chit takes the right edge of the card, clear of the venue name */
+  .ev-cal{top:12px;width:60px;height:68px;right:0}
+  .ev-time{top:86px;width:60px;right:0}
+}
+
+/* venues: editorial columns, no card chrome */
+.venues{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:0}
+.venue{padding:6px 34px 4px;border-left:1px solid var(--line);display:flex;flex-direction:column}
+.venue:first-child{border-left:0;padding-left:0}
+.venue .vlabel{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--orange);font-weight:600}
+.venue h3{font-family:var(--sans);font-size:1.22rem;font-weight:600;letter-spacing:-.01em;
+  color:var(--head);line-height:1.38;margin:11px 0 0}
+.venue .vtext{margin-top:13px;color:var(--ink-soft);font-size:.93rem;line-height:1.7;flex:1}
+.venue .vtext a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid rgba(11,122,134,.42)}
+.venue .vtext a:hover{color:var(--sea-lit);border-color:var(--sea-lit)}
+.venue .vgo{margin-top:20px;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.venue .vgo a{color:var(--blue);text-decoration:none;transition:color .2s,letter-spacing .25s}
+.venue .vgo a:hover{color:var(--sea-lit);letter-spacing:.18em}
+.venue .mapframe{margin-top:22px;height:170px;border-radius:2px}
+@media(max-width:760px){
+  .venue{border-left:0;border-top:1px solid var(--line);padding:26px 0 4px}
+  .venue:first-child{border-top:0;padding-top:6px}
+  .venue h3{min-height:0}
+}
+.mapframe{width:100%;height:200px;border:0;border-radius:6px;margin-top:16px;filter:saturate(.9)}
+.work-embed{padding:6px 0 18px}
+.work-embed .yt{margin-top:6px}
+
+.nores{color:var(--green);font-size:.82rem;white-space:nowrap}
+.readmore{display:block;margin-top:18px;font-size:.92rem;color:var(--blue);text-decoration:none}
+.readmore:hover{text-decoration:underline}
+.listen.inside{background:var(--blue);margin-top:12px}
+.listen.inside:hover{background:var(--ink)}
+.premiere{margin-top:22px;display:inline-block;font-size:.85rem;letter-spacing:.06em;color:var(--gold);
+  border:1px solid currentColor;border-radius:999px;padding:9px 18px}
+.perf{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);font-size:.95rem;color:var(--ink-soft)}
+.perf b{display:block;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+/* the footing to the session cards: one paragraph, the full width of the row above */
+.undernote{margin:38px 0 0;padding-top:28px;border-top:1px solid var(--line);text-align:center;
+  font-size:.97rem;line-height:1.78;color:var(--ink-soft)}
+.undernote a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(11,122,134,.38)}
+.undernote a:hover{color:var(--sea-lit);border-color:var(--sea-lit)}
+@media(max-width:700px){.undernote{margin-top:30px;padding-top:24px;font-size:.93rem}
+  /* the phone column is narrow enough that the break only makes a short orphan line */
+  .undernote .wbr{display:none}}
+
+/* composer pages */
+.cpage{max-width:820px;margin:0 auto;padding:32px 28px 76px}
+.cpage .k{font-size:.74rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
+.cpage h1{font-family:var(--serif);font-size:clamp(1.31rem,3vw,1.84rem);font-weight:600;letter-spacing:-.022em;color:var(--head);margin:20px 0 22px;line-height:1.28}
+.cpage .cdates{color:var(--muted);font-size:1.05rem;margin-bottom:30px}
+figure.facsimile{margin:28px 0 6px;max-width:520px}
+figure.facsimile img{width:100%;display:block;border:1px solid var(--line);border-radius:3px;
+  box-shadow:0 20px 46px rgba(24,21,16,.16)}
+figure.facsimile figcaption{font-size:.76rem;color:var(--muted);margin-top:14px;line-height:1.65}
+figure.promo{margin:26px 0 34px;position:relative}
+/* phones draw a huge play triangle over a video with controls. we take the controls off
+   until playback starts and put a small mark of our own in the corner instead. */
+.vidplay{position:absolute;left:14px;bottom:14px;z-index:2;display:none;align-items:center;
+  justify-content:center;width:50px;height:50px;border-radius:50%;cursor:pointer;padding:0;
+  background:rgba(250,247,240,.9);border:1px solid var(--line);
+  box-shadow:0 6px 20px rgba(24,21,16,.28);transition:background .25s}
+.vidplay svg{width:22px;height:22px;fill:var(--head);margin-left:2px}
+.vidplay:hover{background:#fff}
+@media(max-width:700px){.vidplay:not([hidden]){display:flex}}
+figure.promo video{width:100%;display:block;border-radius:10px;background:#0e141c;
+  border:1px solid var(--line);box-shadow:0 18px 44px rgba(24,21,16,.16)}
+figure.promo figcaption{font-size:.78rem;color:var(--muted);margin-top:10px}
+.portrait{float:right;width:min(280px,42%);margin:6px 0 20px 34px}
+.portrait img{width:100%;border-radius:14px;border:1px solid var(--line);box-shadow:0 14px 34px rgba(24,21,16,.14)}
+.portrait figcaption{font-size:.72rem;color:var(--muted);margin-top:8px;line-height:1.5}
+.portrait.noimg img{display:none}
+.portrait.noimg figcaption{display:none}
+.portrait.round img{border-radius:50%;border:none;box-shadow:0 14px 34px rgba(24,21,16,.18)}
+.portrait.noimg::before{content:attr(data-initials);display:flex;align-items:center;justify-content:center;
+  aspect-ratio:4/5;border-radius:14px;border:1px solid var(--line);
+  background:radial-gradient(60% 60% at 30% 20%, rgba(91,163,217,.18), transparent),
+             radial-gradient(70% 70% at 80% 90%, rgba(56,115,92,.16), transparent), var(--card);
+  font-family:var(--serif);font-style:italic;font-size:4.2rem;color:var(--orange)}
+.cpage p.essay{font-size:1.05rem;line-height:1.8;color:var(--ink-soft);margin-bottom:20px}
+.cpage p.essay:first-of-type::first-letter{font-family:"Bodoni Moda","Georgia",serif;font-size:3.1em;
+  float:left;line-height:.9;padding:6px 12px 0 0;color:var(--orange);font-weight:500}
+.at-fest{clear:both;margin:36px 0;padding:24px 28px;background:var(--card);border:1px solid var(--line);
+  border-left:3px solid var(--orange);border-radius:6px;font-size:1rem;line-height:1.75;color:var(--ink-soft)}
+.at-fest b{display:block;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin-bottom:8px}
+.at-fest a{color:var(--blue);text-decoration:none;font-weight:600}
+.at-fest a:hover{text-decoration:underline}
+.works-head{font-family:var(--serif);font-size:1.08rem;font-weight:600;letter-spacing:-.012em;color:var(--head);margin:44px 0 6px}
+.work-row{display:flex;align-items:center;gap:18px;padding:18px 6px;border-bottom:1px solid var(--line)}
+.work-row:first-of-type{border-top:1px solid var(--line)}
+.work-row .wt{flex:1}
+.work-row .wt b{display:block;font-size:1rem;font-weight:600}
+.work-row .wt span{font-size:.85rem;color:var(--muted)}
+.listen.small{margin:0;padding:9px 18px;font-size:.82rem;white-space:nowrap}
+.work-row .norec{font-size:.78rem;color:var(--gold);border:1px solid currentColor;border-radius:999px;
+  padding:6px 13px;white-space:nowrap}
+.about-cmp{margin-top:34px}
+.about-cmp a{display:inline-block;margin-right:18px;font-family:var(--serif);font-size:1rem;font-weight:600;
+  color:var(--head);text-decoration:none;border-bottom:2px solid var(--orange);padding-bottom:2px;transition:color .2s}
+.about-cmp a:hover{color:var(--sea-lit)}
+
+/* composers index */
+.cindex-head{padding:64px 0 10px;text-align:center}
+.cindex-head h1{font-family:var(--serif);font-size:clamp(1.35rem,3.08vw,1.88rem);font-weight:600;letter-spacing:-.022em;color:var(--head)}
+.cindex-head p{color:var(--muted);margin-top:10px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:22px;padding:44px 0 20px}
+.ccard{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden;
+  display:flex;flex-direction:column;text-align:center;text-decoration:none;color:inherit;
+  transition:transform .3s cubic-bezier(.2,.6,.2,1),box-shadow .3s}
+.ccard:hover{transform:translateY(-4px);box-shadow:0 18px 38px rgba(24,21,16,.10)}
+.ccard .cimg{height:200px;min-height:200px;max-height:200px;overflow:hidden;position:relative;background:
+  radial-gradient(60% 60% at 30% 20%, rgba(91,163,217,.16), transparent),
+  radial-gradient(70% 70% at 80% 90%, rgba(56,115,92,.14), transparent), var(--paper)}
+.ccard .cimg img{position:absolute;inset:0;width:100%;height:100%;max-width:none;
+  object-fit:cover;object-position:center 22%;display:block}
+.ccard .cimg img.photo{object-position:center 30%}
+.ccard .cimg.noimg img{display:none}
+.ccard .cimg.noimg::before{content:attr(data-initials);position:absolute;inset:0;display:flex;
+  align-items:center;justify-content:center;font-family:var(--serif);font-style:italic;
+  font-size:3.4rem;color:var(--orange)}
+.ccard .cbody{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1;align-items:center}
+.ccard h3{font-family:var(--serif);font-size:1.02rem;font-weight:600;letter-spacing:-.012em;color:var(--head);line-height:1.3}
+.ccard .cyrs{color:var(--muted);font-size:.8rem;margin:3px 0 9px}
+.ccard p{font-size:.85rem;line-height:1.55;color:var(--ink-soft);flex:1}
+.ccard .more{margin-top:12px;font-size:.85rem;font-weight:600;color:var(--blue)}
+.ccard .more span{display:inline-block;transition:transform .25s}
+.ccard:hover .more{color:var(--sea-lit)}
+.ccard:hover .more span{transform:translateX(5px)}
+
+@media(min-width:1040px){.musicians{grid-template-columns:repeat(7,1fr)}}
+/* desktop: tighter rhythm (mobile keeps its roomier spacing) */
+@media(min-width:900px){
+  section{padding:54px 0}
+  .intro .wrap{padding-top:40px;padding-bottom:36px}
+  .intro .dates{margin-top:26px}
+  .sec-head{margin-bottom:26px}
+  .events{gap:18px}
+  .event-card{padding:26px 24px 24px}
+  .ev{padding:8px 28px 6px}
+  .musicians{gap:24px 16px}
+  .musician .ph,.musician img{width:112px;height:112px}
+  .musician .nm{font-size:.96rem}
+  .cgrid{gap:18px;padding:30px 0 12px}
+  .cindex-head{padding:44px 0 4px}
+  .prog-item{padding:17px 8px}
+  .works-head{margin:32px 0 4px}
+  footer{margin-top:40px;padding:48px 0 38px}
+  .contact-grid{gap:34px}
+  .cpage,.piece{padding-top:26px}
+}
+
+/* 404 */
+.notfound{max-width:640px;margin:0 auto;text-align:center;padding:110px 28px}
+.notfound h1{font-family:var(--serif);font-size:3rem;font-weight:600;color:var(--orange);letter-spacing:-.024em}
+.notfound p{margin:18px 0 30px;color:var(--ink-soft)}
+.notfound a{display:inline-block;font-weight:600;color:#fff;background:var(--ink);border-radius:999px;
+  padding:13px 30px;text-decoration:none;transition:background .25s}
+.notfound a:hover{background:var(--sea-lit)}
