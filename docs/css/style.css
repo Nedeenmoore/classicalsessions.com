@@ -126,8 +126,8 @@ body.menu-open header{background:var(--paper);backdrop-filter:none;border-bottom
 }
 
 /* hero — full-bleed Dingle Peninsula photograph */
-/* the 2027 announcement, floating on the hero photograph. Dark pill on a pale picture,
-   sitting above the wordmark so it never disturbs the centred stack below it. */
+/* the 2027 announcement on the hero: a dark pill on a pale picture, sitting under the
+   wordmark and the line beneath it. */
 .flash{display:inline-flex;align-items:center;gap:10px;margin-top:30px;
   padding:9px 20px 9px 16px;border-radius:999px;background:rgba(24,21,16,.84);
   backdrop-filter:blur(6px);text-decoration:none;white-space:nowrap;
