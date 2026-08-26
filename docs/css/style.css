@@ -126,6 +126,33 @@ body.menu-open header{background:var(--paper);backdrop-filter:none;border-bottom
 }
 
 /* hero — full-bleed Dingle Peninsula photograph */
+/* the 2027 announcement, floating on the hero photograph. Dark pill on a pale picture,
+   sitting above the wordmark so it never disturbs the centred stack below it. */
+.flash{display:inline-flex;align-items:center;gap:10px;margin-top:30px;
+  padding:9px 20px 9px 16px;border-radius:999px;background:rgba(24,21,16,.84);
+  backdrop-filter:blur(6px);text-decoration:none;white-space:nowrap;
+  box-shadow:0 2px 14px rgba(24,21,16,.18);transition:background .25s,transform .25s}
+.flash:hover{background:rgba(24,21,16,.95);transform:translateY(-1px)}
+.flash .dot{width:7px;height:7px;border-radius:50%;background:#4fc4d2;flex:0 0 auto;
+  box-shadow:0 0 0 0 rgba(79,196,210,.7);animation:flashpulse 2.6s ease-out infinite}
+@keyframes flashpulse{
+  0%{box-shadow:0 0 0 0 rgba(79,196,210,.65)}
+  70%{box-shadow:0 0 0 9px rgba(79,196,210,0)}
+  100%{box-shadow:0 0 0 0 rgba(79,196,210,0)}}
+@media(prefers-reduced-motion:reduce){.flash .dot{animation:none}}
+.flash .flash-lead{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:600;color:#e9e2d4}
+.flash .flash-dates{font-family:"Bodoni Moda","Georgia",serif;font-size:.95rem;
+  font-weight:600;color:#fff;letter-spacing:.01em}
+@media(max-width:620px){
+  .flash{margin-top:22px;gap:8px;padding:7px 15px 7px 12px}
+  .flash .flash-lead{font-size:.63rem;letter-spacing:.13em}
+  .flash .flash-dates{font-size:.85rem}
+}
+@media(max-width:380px){
+  .flash .flash-lead{display:none}
+  .flash{padding:7px 16px}
+}
 .hero{position:relative;min-height:min(62vh,640px);display:flex;align-items:center;justify-content:center;
   text-align:center;overflow:hidden;background-color:var(--paper)}
 .hero::before{content:"";position:absolute;inset:0;z-index:0;
