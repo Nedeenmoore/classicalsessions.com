@@ -585,7 +585,7 @@ body.floatnav .brand .brandtext{color:#1b2331}
 .cgintro a:hover{color:var(--sea-lit);border-color:var(--sea-lit)}
 /* the announcement of next year's dates, on the festival front page */
 .nextyear{margin:26px auto 0;max-width:38em;text-align:center;font-size:1.02rem;line-height:1.8;
-  color:var(--ink-soft)}
+  color:var(--ink-soft);scroll-margin-top:calc(var(--navh) + 96px)}
 .nextyear a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(11,122,134,.38)}
 .nextyear a:hover{color:var(--sea-lit);border-color:var(--sea-lit)}
 
