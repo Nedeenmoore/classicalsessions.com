@@ -77,10 +77,10 @@
 
 <div class="intro" id="about">
   <video class="intro-vid" id="introvid" muted loop playsinline preload="none"
-         poster="img/sessions-band-poster.jpg" data-webm="video/sessions-band.webm"
-         data-src="video/sessions-band.mp4"
-         data-poster-phone="img/sessions-band-phone-poster.jpg"
-         data-src-phone="video/sessions-band-phone.mp4"
+         poster="img/daylight-poster.jpg"
+         data-src="video/daylight.mp4"
+         data-poster-phone="img/daylight-phone-poster.jpg"
+         data-src-phone="video/daylight-phone.mp4"
          aria-hidden="true" tabindex="-1"></video>
   <div class="intro-scrim" aria-hidden="true"></div>
   <button class="sndbtn" id="sndbtn" type="button" aria-pressed="false" hidden></button>
@@ -254,7 +254,7 @@
       var canWebm = vid.canPlayType && vid.canPlayType('video/webm; codecs="vp9,opus"');
       var d = vid.dataset;
       vid.src = phone ? ((canWebm && d.webmPhone) ? d.webmPhone : d.srcPhone)
-                      : (canWebm ? d.webm : d.src);
+                      : ((canWebm && d.webm) ? d.webm : d.src);
       vid.load();
       var go = vid.play();
       if (go && go.catch) { go.catch(function(){}); }

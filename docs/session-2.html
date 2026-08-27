@@ -247,7 +247,7 @@
       var canWebm = vid.canPlayType && vid.canPlayType('video/webm; codecs="vp9,opus"');
       var d = vid.dataset;
       vid.src = phone ? ((canWebm && d.webmPhone) ? d.webmPhone : d.srcPhone)
-                      : (canWebm ? d.webm : d.src);
+                      : ((canWebm && d.webm) ? d.webm : d.src);
       vid.load();
       var go = vid.play();
       if (go && go.catch) { go.catch(function(){}); }
