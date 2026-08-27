@@ -262,8 +262,9 @@ body.home .screen1 .megarow{flex:0 0 auto}
 @keyframes bandpan{from{object-position:0% 50%}to{object-position:100% 50%}}
 @media(max-width:699px){
   /* the clip is far wider than the band, so drift across it: the full sweep takes
-     half the clip, then it eases back, arriving home exactly as the video loops */
-  .intro-vid{object-position:0% 50%;animation:bandpan 30.1s ease-in-out infinite alternate;
+     half the clip, then it eases back, arriving home exactly as the video loops.
+     the clip runs 60.64s, so half of it is 30.32s */
+  .intro-vid{object-position:0% 50%;animation:bandpan 30.32s ease-in-out infinite alternate;
     will-change:object-position}
   .intro-scrim{background:
     linear-gradient(to bottom, rgba(250,247,240,.58), rgba(250,247,240,0) 22%, rgba(250,247,240,0) 78%, rgba(250,247,240,.58))}}
