@@ -232,8 +232,8 @@ body.home .screen1 .megarow{flex:0 0 auto}
   background:
     linear-gradient(to bottom, rgba(250,247,240,.62), rgba(250,247,240,0) 20%, rgba(250,247,240,0) 80%, rgba(250,247,240,.62))}
 .intro .wrap{position:relative;z-index:2;width:100%;padding-top:46px;padding-bottom:40px}
-/* the line of type now sits along the foot of the band, so the sound mark moves up top */
-.sndbtn{position:absolute;right:20px;top:16px;z-index:3;display:inline-flex;align-items:center;gap:9px;
+/* the credit sits at the head of the band, so the sound mark answers it from the foot */
+.sndbtn{position:absolute;right:20px;bottom:16px;z-index:3;display:inline-flex;align-items:center;gap:9px;
   font-family:var(--sans);font-size:.61rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
   color:var(--head);background:rgba(250,247,240,.72);border:1px solid var(--line);border-radius:0;
   padding:8px 13px;cursor:pointer;line-height:1;
@@ -241,7 +241,7 @@ body.home .screen1 .megarow{flex:0 0 auto}
 .sndbtn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);letter-spacing:.26em}
 .sndbtn[hidden]{display:none}
 .sndbtn svg{width:13px;height:13px;flex:0 0 13px;display:block}
-@media(max-width:760px){.sndbtn{right:12px;top:12px;font-size:.58rem;padding:7px 11px}}
+@media(max-width:760px){.sndbtn{right:12px;bottom:12px;font-size:.58rem;padding:7px 11px}}
 /* the music under the film is not ours. the credit sits quietly in the corner. */
 .vidcred{position:absolute;left:20px;top:16px;z-index:3;display:block;
   font-family:var(--sans);font-size:.55rem;font-weight:400;letter-spacing:.04em;
