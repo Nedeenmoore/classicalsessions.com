@@ -217,7 +217,7 @@ body.home .screen1 .megarow{flex:0 0 auto}
 
 /* intro band under the hero */
 /* half an inch of paper between the tile ribbon and the film */
-.intro{position:relative;overflow:hidden;padding:0;text-align:center;margin-top:48px;
+.intro{position:relative;overflow:hidden;isolation:isolate;padding:0;text-align:center;margin-top:48px;
   min-height:min(56vh,470px);display:flex;align-items:flex-end;
   border-bottom:1px solid var(--line);
   background:
@@ -228,12 +228,18 @@ body.home .screen1 .megarow{flex:0 0 auto}
    sessions below, so the wash is now only a soft edge into the paper above and beneath. */
 .intro-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45%;
   opacity:.9;pointer-events:none;z-index:0}
-.intro-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;
+/* the sand in the hero photograph, laid over the film so the tile ribbon between them
+   reads as a hinge rather than a border. hue and saturation only: the picture keeps its
+   own light, and the players stay black and white. */
+.intro-tint{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:#7c6b5d;mix-blend-mode:color;opacity:.35}
+@media(prefers-reduced-motion:reduce){.intro-tint{display:none}}
+.intro-scrim{position:absolute;inset:0;z-index:2;pointer-events:none;
   background:
     linear-gradient(to bottom, rgba(250,247,240,.62), rgba(250,247,240,0) 20%, rgba(250,247,240,0) 80%, rgba(250,247,240,.62))}
-.intro .wrap{position:relative;z-index:2;width:100%;padding-top:46px;padding-bottom:40px}
+.intro .wrap{position:relative;z-index:3;width:100%;padding-top:46px;padding-bottom:40px}
 /* the credit sits at the head of the band, so the sound mark answers it from the foot */
-.sndbtn{position:absolute;right:20px;bottom:16px;z-index:3;display:inline-flex;align-items:center;gap:9px;
+.sndbtn{position:absolute;right:20px;bottom:16px;z-index:4;display:inline-flex;align-items:center;gap:9px;
   font-family:var(--sans);font-size:.61rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
   color:var(--head);background:rgba(250,247,240,.72);border:1px solid var(--line);border-radius:0;
   padding:8px 13px;cursor:pointer;line-height:1;
@@ -243,7 +249,7 @@ body.home .screen1 .megarow{flex:0 0 auto}
 .sndbtn svg{width:13px;height:13px;flex:0 0 13px;display:block}
 @media(max-width:760px){.sndbtn{right:12px;bottom:12px;font-size:.58rem;padding:7px 11px}}
 /* the music under the film is not ours. the credit sits quietly in the corner. */
-.vidcred{position:absolute;left:20px;top:16px;z-index:3;display:block;
+.vidcred{position:absolute;left:20px;top:16px;z-index:4;display:block;
   font-family:var(--sans);font-size:.55rem;font-weight:400;letter-spacing:.04em;
   color:var(--ink);line-height:1.5;max-width:60%;text-align:left;text-decoration:none}
 .vidcred i{font-style:italic}
