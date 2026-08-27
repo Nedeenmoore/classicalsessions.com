@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../css/style.css?v=211">
+<link rel="stylesheet" href="../css/style.css?v=213">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://classicalsessions.com/#organization", "name": "Classical Sessions", "alternateName": "Classical Sessions Chamber Music Festival", "url": "https://classicalsessions.com/", "logo": "https://classicalsessions.com/img/logo.png", "address": {"@type": "PostalAddress", "addressLocality": "Castlegregory", "addressRegion": "Co. Kerry", "addressCountry": "IE"}, "areaServed": "Castlegregory, Brandon and Cloghane, Dingle Peninsula, Co. Kerry, Ireland"}, {"@type": "EventSeries", "@id": "https://classicalsessions.com/#festival", "name": "Classical Sessions 2027", "url": "https://classicalsessions.com/", "startDate": "2027-07-28", "endDate": "2027-08-08", "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode", "eventStatus": "https://schema.org/EventScheduled", "isAccessibleForFree": true, "image": ["https://classicalsessions.com/img/og-image.jpg"], "description": "A festival of chamber music on the north coast of the Dingle Peninsula: free evening concerts by internationally acclaimed musicians, under the artistic direction of Patrick and Martin Moriarty, Nathan Meltzer and Hannah Ishizaki.", "organizer": {"@id": "https://classicalsessions.com/#organization"}, "location": {"@type": "Place", "name": "Castlegregory & Brandon/Cloghane, Dingle Peninsula", "address": {"@type": "PostalAddress", "addressLocality": "Castlegregory", "addressRegion": "Co. Kerry", "addressCountry": "IE"}}}]}</script>
 <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "Person", "@id": "https://classicalsessions.com/musicians/oszkar-varga.html#person", "name": "Oszkár Varga", "url": "https://classicalsessions.com/musicians/oszkar-varga.html", "jobTitle": "Violinist and violist", "knowsAbout": ["Chamber music", "Violin / Viola"], "performerIn": {"@id": "https://classicalsessions.com/#festival2026"}, "image": "https://classicalsessions.com/img/oszkar-varga-sq.jpg", "description": "Oszkár Varga studied with renowned artists such as Dejan Bogdanovich, Barnabás Kelemen, Katalin Kokas, Rita Wagner and Albert Markov, and also had lessons with Zakhar Bron, Ferenc Rados and Ivry Gitlis."}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Classical Sessions", "item": "https://classicalsessions.com/"}, {"@type": "ListItem", "position": 2, "name": "The musicians", "item": "https://classicalsessions.com/musicians/index.html"}, {"@type": "ListItem", "position": 3, "name": "Oszkár Varga"}]}]</script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "73b8c3db621e43a5887306336c46b851"}'></script>
@@ -214,6 +214,12 @@
   });
 
   // ---- ambient band video behind the introduction ----
+  // the picture loops on the video element. the sound does not: a looping <video> leaves a
+  // small gap at the wrap, partly the decoder reseeking and partly the silence every AAC
+  // stream carries at its head. so the sound is played separately through the Web Audio
+  // clock, which loops a decoded buffer sample for sample and cannot gap. the clip was cut
+  // so that its last sample and its first are consecutive moments of the recording, which
+  // is what makes a bare loop sound like a continuation rather than a return.
   var vid = document.getElementById('introvid'), snd = document.getElementById('sndbtn');
   if (vid && snd) {
     var SPK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/>',
@@ -232,15 +238,94 @@
       if (go && go.catch) { go.catch(function(){}); }
       snd.innerHTML = OFF;
       snd.hidden = false;
-      snd.addEventListener('click', function(){
-        vid.muted = !vid.muted;
-        if (!vid.muted) { vid.volume = .8; var p = vid.play(); if (p && p.catch) { p.catch(function(){}); } }
-        snd.innerHTML = vid.muted ? OFF : ON;
-        snd.setAttribute('aria-pressed', String(!vid.muted));
-      });
+      var AC = window.AudioContext || window.webkitAudioContext,
+          CLIP = parseFloat(vid.dataset.clip || '0') || 0,
+          AURL = vid.dataset.audio,
+          actx = null, gain = null, node = null, abuf = null, sync = 0,
+          want = false, loading = false, useEl = !(AC && AURL && CLIP);
+
+      // an AAC stream begins with a few milliseconds of encoder padding. find where the
+      // music actually starts and loop from there, so the padding never enters the loop.
+      function head(b){
+        var d = b.getChannelData(0), n = Math.min(d.length, Math.round(b.sampleRate * 1.5));
+        for (var i = 0; i < n; i++) { if (Math.abs(d[i]) > 0.002) return i / b.sampleRate; }
+        return 0;
+      }
+      function elementSound(on){
+        vid.muted = !on;
+        if (on) { vid.volume = .8; var p = vid.play(); if (p && p.catch) { p.catch(function(){}); } }
+      }
+      function mark(on){
+        snd.innerHTML = on ? ON : OFF;
+        snd.setAttribute('aria-pressed', String(on));
+      }
+      function startNode(){
+        if (!abuf || node) return;
+        var h = head(abuf), len = Math.min(CLIP, abuf.duration - h);
+        node = actx.createBufferSource();
+        node.buffer = abuf; node.loop = true;
+        node.loopStart = h; node.loopEnd = h + len;
+        node.connect(gain);
+        var pos = vid.currentTime % len, off = h + pos;
+        try { node.start(0, Math.min(off, h + len - 0.02)); }
+        catch (e) { node = null; useEl = true; elementSound(true); return; }
+        var t = actx.currentTime;
+        gain.gain.cancelScheduledValues(t);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.8, t + 0.7);
+        // the sound now runs on its own clock. should the picture fall behind, nudge the
+        // picture rather than the sound: a small jump on a locked-off shot goes unnoticed,
+        // a gap in the music does not.
+        var t0 = t, p0 = pos;
+        clearInterval(sync);
+        sync = setInterval(function(){
+          if (!node || vid.paused) return;
+          var here = (p0 + (actx.currentTime - t0)) % len,
+              drift = (vid.currentTime % len) - here;
+          if (drift > len / 2) { drift -= len; } else if (drift < -len / 2) { drift += len; }
+          if (Math.abs(drift) > 0.5) { try { vid.currentTime = here; } catch (e) {} }
+        }, 15000);
+      }
+      function stopNode(){
+        if (!node) return;
+        var t = actx.currentTime, n = node;
+        node = null; clearInterval(sync); sync = 0;
+        gain.gain.cancelScheduledValues(t);
+        gain.gain.setValueAtTime(Math.max(gain.gain.value, 0.0001), t);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+        setTimeout(function(){ try { n.stop(); n.disconnect(); } catch (e) {} }, 700);
+      }
+      function wantSound(on){
+        want = on; mark(on);
+        if (useEl) { elementSound(on); return; }
+        if (!actx) {
+          try { actx = new AC(); gain = actx.createGain(); gain.gain.value = 0.0001; gain.connect(actx.destination); }
+          catch (e) { useEl = true; elementSound(on); return; }
+        }
+        if (actx.state === 'suspended') { actx.resume(); }
+        if (!on) { stopNode(); return; }
+        if (abuf) { startNode(); return; }
+        if (loading) return;
+        loading = true;
+        fetch(AURL).then(function(r){ return r.arrayBuffer(); })
+          .then(function(ab){
+            return new Promise(function(res, rej){
+              var p = actx.decodeAudioData(ab, res, rej);
+              if (p && p.then) { p.then(res, rej); }
+            });
+          })
+          .then(function(b){ loading = false; abuf = b; if (want) { startNode(); } })
+          .catch(function(){ loading = false; useEl = true; if (want) { elementSound(true); } });
+      }
+      snd.addEventListener('click', function(){ wantSound(!want); });
       document.addEventListener('visibilitychange', function(){
-        if (document.hidden) { vid.pause(); }
-        else if (vid.muted) { var p = vid.play(); if (p && p.catch) { p.catch(function(){}); } }
+        if (document.hidden) {
+          vid.pause();
+          if (actx && node) { actx.suspend(); }
+        } else {
+          var p = vid.play(); if (p && p.catch) { p.catch(function(){}); }
+          if (actx && node) { actx.resume(); }
+        }
       });
     }
   }

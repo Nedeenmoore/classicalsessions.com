@@ -249,7 +249,11 @@ body.home .screen1 .megarow{flex:0 0 auto}
 .sndbtn svg{width:13px;height:13px;flex:0 0 13px;display:block}
 @media(max-width:760px){.sndbtn{right:12px;bottom:12px;font-size:.58rem;padding:7px 11px}}
 /* the music under the film is not ours. the credit sits quietly in the corner. */
-.vidcred{position:absolute;left:20px;top:16px;z-index:4;display:block;
+/* the credit sits on the paper above the film. inside the picture the piano lid runs
+   right to the top edge, so on a phone the pan would drag the words across black. */
+.introblock{margin-top:44px}
+.introblock .intro{margin-top:9px}
+.vidcred{display:block;padding:0 20px;
   font-family:var(--sans);font-size:.55rem;font-weight:400;letter-spacing:.04em;
   color:var(--ink);line-height:1.5;max-width:60%;text-align:left;text-decoration:none}
 .vidcred i{font-style:italic}
@@ -258,7 +262,7 @@ body.home .screen1 .megarow{flex:0 0 auto}
   font-size:.76rem;line-height:1.65;color:var(--muted)}
 .rights a{color:var(--sea-lit)}
 .rights i{font-style:italic}
-@media(max-width:760px){.vidcred{left:12px;top:12px;font-size:.5rem}}
+@media(max-width:760px){.vidcred{padding:0 14px;font-size:.5rem}}
 @keyframes bandpan{from{object-position:0% 50%}to{object-position:100% 50%}}
 @media(max-width:699px){
   /* the clip is far wider than the band, so drift across it: the full sweep takes
@@ -269,7 +273,8 @@ body.home .screen1 .megarow{flex:0 0 auto}
   .intro-scrim{background:
     linear-gradient(to bottom, rgba(250,247,240,.58), rgba(250,247,240,0) 22%, rgba(250,247,240,0) 78%, rgba(250,247,240,.58))}}
 @media(prefers-reduced-motion:reduce){.intro-vid{display:none;animation:none}.vidcred{display:none}}
-@media(max-width:700px){.intro{min-height:min(52vh,380px);margin-top:34px}
+@media(max-width:700px){.introblock{margin-top:30px}
+  .intro{min-height:min(52vh,380px);margin-top:34px}
   .intro .wrap{padding-top:34px;padding-bottom:28px}}
 /* the sessions read as one element: a line of type above, the three cards, a line below,
    the whole thing closed top and bottom by a hairline. */
