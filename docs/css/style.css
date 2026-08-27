@@ -312,6 +312,9 @@ section{padding:76px 0}
 
 /* musicians */
 .musicians{display:grid;grid-template-columns:repeat(auto-fill,minmax(156px,1fr));gap:32px 22px}
+/* four of them, not seven, so they sit in the middle of the page rather than to one side */
+.musicians.dirgrid{grid-template-columns:repeat(auto-fit,156px);justify-content:center}
+.sec-head.centred{justify-content:center;flex-direction:column;align-items:center;gap:8px;text-align:center}
 .musician{display:block;text-align:center;text-decoration:none}
 .musician .ph{position:relative;display:block;width:128px;height:128px;margin:0 auto 14px;border-radius:50%}
 .musician img{width:128px;height:128px;border-radius:50%;object-fit:cover;display:block;margin:0 auto;
@@ -609,6 +612,9 @@ body.floatnav .brand .brandtext{color:#1b2331}
 /* footer */
 footer{background:var(--ink);color:#cfc8ba;margin-top:60px;padding:64px 0 48px;font-size:.9rem}
 .foot{display:grid;grid-template-columns:auto 1fr auto;gap:40px;align-items:center;justify-items:start}
+@media(min-width:721px){.foot:not(:has(.fr)){grid-template-columns:auto 1fr}}
+.fdir.credits{display:inline-block;margin-top:6px;font-size:.82rem;color:#938b78}
+.fdir.credits a{color:#938b78}
 @media(max-width:720px){.foot{grid-template-columns:1fr;text-align:center;justify-items:center}}
 .foot img{height:74px;width:auto;filter:drop-shadow(0 4px 14px rgba(0,0,0,.4))}
 .foot .fmid{line-height:1.9}
@@ -834,7 +840,8 @@ figure.promo figcaption{font-size:.78rem;color:var(--muted);margin-top:10px}
 .ccard:hover .more{color:var(--sea-lit)}
 .ccard:hover .more span{transform:translateX(5px)}
 
-@media(min-width:1040px){.musicians{grid-template-columns:repeat(7,1fr)}}
+@media(min-width:1040px){.musicians{grid-template-columns:repeat(7,1fr)}
+  .musicians.dirgrid{grid-template-columns:repeat(4,156px)}}
 /* desktop: tighter rhythm (mobile keeps its roomier spacing) */
 @media(min-width:900px){
   section{padding:54px 0}
